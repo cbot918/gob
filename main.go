@@ -1,18 +1,14 @@
 package main
 
-import (
-	"gob/src/pkg/ygo/scanner"
-	"gob/src/pkg/ygo/yutil"
-	"gob/src/pkg/ygo/yutil/command"
-)
+import "github.com/cbot918/liby/cmdy"
 
-func main() {
-	c := command.NewCmd()
-
-	s := scanner.NewScanner(c.FileName())
-	yutil.LogJson(s.GetObjArr())
-
-	y := command.NewYexec(c.ProjName())
-	y.ExecObj(s.GetObjArr())
+func main(){
+	c := cmdy.New()
+	script1 := []string{"git clone -b go https://github.com/cbot918/template"}
+	script2 := []string{"rm -rf template"}
+	c.Run(script1)
+	c.Run(script2)
+	
+	
 
 }

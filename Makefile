@@ -1,13 +1,11 @@
-clean: gob.exe
-	rm gob.exe
-	rm -rf myproj
+clean:
+	rm *.test
 
-install-win: gob.exe config.json
-	mkdir -p $(USERPROFILE)\myprogram\gob\bin
-	cp gob.exe config.json $(USERPROFILE)\myprogram\gob\bin
+test-install:
+	go run test/test_install/main.go
 
-test: gob.exe
-	.\gob.exe myproj 
+run:
+	go run .
 
-gob.exe: main.go
-	go build .
+.PHONY: clean run
+.SILENT: clean run
