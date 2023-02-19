@@ -53,7 +53,7 @@ func (g *Gob) Run(){
 									g.GoMigratePostgresInstall,
 									g.GOMigrateInitCommand,
 									"docker-compose up -d",
-									// fmt.Sprintf("echo \"docker exec -it %s createdb --username=root --owner=root %s \" >> setup.sh",g.DPostgresContainerName,g.DPostgresDbName),
+									fmt.Sprintf("echo \"docker exec -it %s createdb --username=root --owner=root %s \" >> createdb.sh",g.DPostgresContainerName,g.DPostgresDbName),
 									// "sudo chmod +x setup.sh",
 								})
 								fmt.Printf("execute done:\n install go-migrate\n migrate create\n\n")
