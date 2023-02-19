@@ -1,0 +1,12 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/xenial64"
+  config.vm.define "ci-vm"
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo su
+    echo "vagrant ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+    curl -OL https://go.dev/dl/go1.20.linux-amd64.tar.gz
+    sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.20.linux-amd64.tar.gz
+    rm -f go1.20.linux-amd64.tar.gz
+    echo "export PATH=\$PATH:/usr/local/go/bin" >> /home/vagrant/.bashrc
+  SHELL
+end
