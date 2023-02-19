@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres:13.2-alpine
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 12345
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    network_mode: host
+    ports:
+      - "5433:5432"
+
+
+  # pgadmin:
+  #   image: dpage/pgadmin4:latest
+
+  #   restart: always
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: yale918@gmail.com
+  #     PGADMIN_DEFAULT_PASSWORD: 12345
+  #     PGADMIN_LISTEN_PORT: 80
+  #   ports:
+  #     - "8080:80"
+  #   volumes:
+  #     - pgadmin-data:/var/lib/pgadmin
+  #   links:
+  #     - "db:pgsql-server"
+
+volumes:
+    db-data:
+    # pgadmin-data:

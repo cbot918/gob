@@ -12,6 +12,12 @@ import (
 type Gob struct {
 	GhName string
 	GhUrl string
+	DCPostgresURL string
+	DCPostgresDefaultPort int32
+	GoMigratePostgresInstall string
+	GOMigrateInitCommand string
+	DPostgresContainerName string
+	DPostgresDbName string
 }
 
 func New() *Gob{
@@ -19,7 +25,12 @@ func New() *Gob{
 
 	g.GhName = "gh_2.23.0_linux_amd64"
 	g.GhUrl = "https://github.com/cli/cli/releases/download/v2.23.0/gh_2.23.0_linux_amd64.tar.gz"
-
+	g.DCPostgresURL = "https://raw.githubusercontent.com/cbot918/infra-auto/main/src/.yale/docker-config/postgres/docker-compose.yml"
+	g.DCPostgresDefaultPort = 5433
+	g.GoMigratePostgresInstall = "go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest"
+	g.GOMigrateInitCommand = "migrate create -ext sql -dir db/migrations -seq users_table"
+	g.DPostgresContainerName = "postgres"
+	g.DPostgresDbName = "authy"
 	return g
 }
 func (g *Gob) Run(){
@@ -29,15 +40,38 @@ func (g *Gob) Run(){
 
 	if len(args) == 1{ fmt.Println("gob help page")} else {
 		switch args[1] {
-			case "cmd":{
-				if len(args) == 2 { fmt.Println("gob cmd help page") } else {
-					u.Logg("in cmd")
-					c.Run([]string{
-						args[2],
-					})
+			
+			case "db":{
+				if len(args) == 2 { fmt.Println("gob db help page") } else {
+					switch args[2] {
+					case "init" :{
+						if len(args) == 3 { fmt.Println("gob db init help page")} else{
+							switch args[3]{
+							case "postgres":{
+								c.Run([]string{
+									fmt.Sprintf("curl -OL %s",g.DCPostgresURL),
+									g.GoMigratePostgresInstall,
+									g.GOMigrateInitCommand,
+									"docker-compose up -d",
+									// fmt.Sprintf("echo \"docker exec -it %s createdb --username=root --owner=root %s \" >> setup.sh",g.DPostgresContainerName,g.DPostgresDbName),
+									// "sudo chmod +x setup.sh",
+								})
+								fmt.Printf("execute done:\n install go-migrate\n migrate create\n\n")
+								fmt.Println("todo:\n docker exec -it postgres bash \n psql")
+							}
+							case "reids":{
+								
+							}
+							}
+						}
+					}
+				case "other":{
+					
+				}
+					}
 				}
 			}
-		
+
 			case "init":{
 				if len(args) == 2 { fmt.Println("gob init help page") } else {
 					if args[2] == "."{
@@ -56,7 +90,14 @@ func (g *Gob) Run(){
 					}
 				}
 			}
-
+			case "cmd":{
+				if len(args) == 2 { fmt.Println("gob cmd help page") } else {
+					u.Logg("in cmd")
+					c.Run([]string{
+						args[2],
+					})
+				}
+			}
 			case "gitc":{
 				if len(args) == 2 { fmt.Println("gob gitc help page")} else{
 					if args[2] == "."{
